@@ -214,7 +214,11 @@ describe('VideoLoopManager', () => {
           mockTimerService,
         )
         manager.findVideoElement()
-        mockVideoElement.duration = 60
+        Object.defineProperty(mockVideoElement, 'duration', {
+          value: 60,
+          writable: false,
+          configurable: true,
+        })
 
         manager.startLoopCheck({ enabled: true, startTime: 50, endTime: null })
         mockVideoElement.currentTime = 60
