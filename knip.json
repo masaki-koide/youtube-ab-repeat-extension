@@ -1,0 +1,9 @@
+{
+  "entry": [
+    "entrypoints/content/index.ts",
+    "entrypoints/background.ts",
+    "wxt.config.ts"
+  ],
+  "project": ["**/*.{ts,tsx}", "!**/*.d.ts"],
+  "ignoreDependencies": []
+}
