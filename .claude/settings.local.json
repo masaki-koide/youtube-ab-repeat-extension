@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(mkdir:*)",
+      "Bash(npm run compile:*)",
+      "Bash(npm run format:*)",
+      "Bash(npm run lint:*)",
+      "Bash(npm run test:*)",
+      "Bash(npx knip:*)",
+      "Bash(ls:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:speakerdeck.com)",
+      "WebFetch(domain:wxt.dev)"
+    ],
+    "deny": []
+  },
+  "enabledMcpjsonServers": [
+    "github",
+    "context7",
+    "playwright"
+  ]
+}
