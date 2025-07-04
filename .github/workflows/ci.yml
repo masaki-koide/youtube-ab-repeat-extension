@@ -119,4 +119,9 @@ jobs:
         run: npm ci
 
       - name: Build for ${{ matrix.browser }}
-        run: npm run build:${{ matrix.browser }}
+        run: |
+          if [ "${{ matrix.browser }}" = "chrome" ]; then
+            npm run build
+          else
+            npm run build:${{ matrix.browser }}
+          fi
