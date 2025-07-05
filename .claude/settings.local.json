@@ -6,6 +6,8 @@
       "Bash(ls:*)",
       "Bash(mkdir:*)",
       "Bash(npm run:*)",
+      "Bash(npm test:*)",
+      "Bash(npm view:*)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:speakerdeck.com)",
       "WebFetch(domain:wxt.dev)",
