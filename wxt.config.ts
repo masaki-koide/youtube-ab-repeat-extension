@@ -7,5 +7,8 @@ export default defineConfig({
     description:
       'Loop sections of YouTube videos with customizable start and end times',
     permissions: [],
+    content_security_policy: {
+      extension_pages: "script-src 'self'; object-src 'none'",
+    },
   },
 })
