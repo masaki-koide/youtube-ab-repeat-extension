@@ -42,6 +42,7 @@ const createDefaultHandlers = (args: TimeInputOptions) => ({
       console.log('Double clicked, returning current time: 125')
       return 125
     }),
+  getVideoDuration: args.getVideoDuration || (() => 600), // Default 10 minutes
 })
 
 const renderTimeInput = (args: TimeInputOptions): TimeInputElement => {
@@ -89,6 +90,7 @@ export const Interactive: Story = {
         console.log('Getting current time:', mockTime)
         return mockTime
       },
+      getVideoDuration: () => 600, // 10 minutes
     })
     return input
   },
@@ -109,32 +111,44 @@ export const Interactive: Story = {
     // Test clearing
     await userEvent.click(clearButton)
     await expect(input).toHaveValue('')
-  },
-}
 
-export const DoubleClickDemo: Story = {
-  render: () => {
-    const container = document.createElement('div')
-    container.style.padding = '20px'
-    container.innerHTML =
-      '<p style="margin-bottom: 10px;">Double-click the input to set current time (simulated as 02:30)</p>'
+    // Test scroll functionality
+    await userEvent.type(input, '00:01:00')
+    await userEvent.tab()
 
-    const mockCurrentTime = 150 // 2:30
-    const input = createTimeInput({
-      label: 'A',
-      value: null,
-      onChange: (value) => {
-        console.log('Value changed to:', value)
-        input._updateValue?.(value)
-      },
-      onDoubleClick: () => {
-        console.log('Current time:', mockCurrentTime)
-        return mockCurrentTime
-      },
+    // Simulate scroll up (decrease time by 1 second)
+    const wheelEvent = new WheelEvent('wheel', {
+      deltaY: -100,
+      bubbles: true,
     })
+    input.dispatchEvent(wheelEvent)
+    await expect(input).toHaveValue('00:00:59')
 
-    container.appendChild(input)
-    return container
+    // Simulate scroll down (increase time by 1 second)
+    const wheelEventDown = new WheelEvent('wheel', {
+      deltaY: 100,
+      bubbles: true,
+    })
+    input.dispatchEvent(wheelEventDown)
+    await expect(input).toHaveValue('00:01:00')
+
+    // Test with shift key (10 seconds)
+    const wheelEventShift = new WheelEvent('wheel', {
+      deltaY: 100,
+      shiftKey: true,
+      bubbles: true,
+    })
+    input.dispatchEvent(wheelEventShift)
+    await expect(input).toHaveValue('00:01:10')
+
+    // Test with ctrl key (60 seconds)
+    const wheelEventCtrl = new WheelEvent('wheel', {
+      deltaY: 100,
+      ctrlKey: true,
+      bubbles: true,
+    })
+    input.dispatchEvent(wheelEventCtrl)
+    await expect(input).toHaveValue('00:02:10')
   },
 }
 
@@ -158,6 +172,7 @@ export const DarkAndLight: Story = {
       value: 65, // 1:05
       onChange: (value) => console.log('Light input:', value),
       onDoubleClick: () => 120,
+      getVideoDuration: () => 600,
     })
     lightContainer.appendChild(lightInput)
 
@@ -177,6 +192,7 @@ export const DarkAndLight: Story = {
       value: 245, // 4:05
       onChange: (value) => console.log('Dark input:', value),
       onDoubleClick: () => 300,
+      getVideoDuration: () => 600,
     })
     darkContainer.appendChild(darkInput)
 

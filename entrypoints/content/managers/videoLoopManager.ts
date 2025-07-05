@@ -5,6 +5,7 @@ interface VideoLoopManager {
   startLoopCheck(state: ABRepeatState): void
   stopLoopCheck(): void
   getCurrentTime(): number
+  getVideoDuration(): number
   cleanup(): void
 }
 
@@ -79,6 +80,10 @@ export function createVideoLoopManager(
 
     getCurrentTime(): number {
       return Math.floor(videoElement?.currentTime || 0)
+    },
+
+    getVideoDuration(): number {
+      return Math.floor(videoElement?.duration || 0)
     },
 
     cleanup(): void {

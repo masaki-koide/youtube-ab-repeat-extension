@@ -61,6 +61,10 @@ const createFormHandlers = (args: ABRepeatFormArgs, mockTime = 100) => ({
       console.log('Getting current time')
       return mockTime
     }),
+  getVideoDuration: () => {
+    console.log('Getting video duration')
+    return 300 // Mock 5 minutes video
+  },
 })
 
 const renderForm = (
@@ -136,17 +140,20 @@ export const Interactive: Story = {
         state = { ...state, startTime: time }
         form._updateState?.(state)
         console.log('Start time changed:', time)
+        args.onStartTimeChange?.(time)
       },
       onEndTimeChange: (time) => {
         state = { ...state, endTime: time }
         form._updateState?.(state)
         console.log('End time changed:', time)
+        args.onEndTimeChange?.(time)
       },
       getCurrentTime: () => {
         mockCurrentTime += 30 // Simulate progression
         console.log('Current time:', mockCurrentTime)
         return mockCurrentTime
       },
+      getVideoDuration: () => 300, // 5 minutes video
     })
 
     return form
@@ -225,13 +232,17 @@ export const SimulatedVideoPlayer: Story = {
         console.log('End time set to:', time)
       },
       getCurrentTime: () => currentTime,
+      getVideoDuration: () => 300, // 5 minutes video
     })
 
-    const hint = document.createElement('p')
+    const hint = document.createElement('div')
     hint.style.textAlign = 'center'
     hint.style.fontSize = '14px'
     hint.style.color = '#666'
-    hint.textContent = 'Double-click the inputs to set current video time'
+    hint.innerHTML = `
+      <p style="margin: 5px 0;">Double-click the inputs to set current video time</p>
+      <p style="margin: 5px 0;">Use mouse scroll to adjust time (Normal: ±1s, Shift: ±10s, Ctrl: ±1m)</p>
+    `
 
     container.appendChild(videoContainer)
     container.appendChild(form)

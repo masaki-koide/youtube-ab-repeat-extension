@@ -8,12 +8,19 @@ export interface ABRepeatFormOptions {
   onStartTimeChange: (time: number | null) => void
   onEndTimeChange: (time: number | null) => void
   getCurrentTime: () => number
+  getVideoDuration: () => number
 }
 
 export function createABRepeatForm(
   options: ABRepeatFormOptions,
 ): ABRepeatFormElement {
-  const { state, onStartTimeChange, onEndTimeChange, getCurrentTime } = options
+  const {
+    state,
+    onStartTimeChange,
+    onEndTimeChange,
+    getCurrentTime,
+    getVideoDuration,
+  } = options
 
   const form = document.createElement('div') as ABRepeatFormElement
   form.style.cssText = formStyles.container(isDarkTheme(), state.enabled)
@@ -26,6 +33,7 @@ export function createABRepeatForm(
     value: state.startTime,
     onChange: onStartTimeChange,
     onDoubleClick: getCurrentTime,
+    getVideoDuration,
   })
 
   const endInput = createTimeInput({
@@ -33,6 +41,7 @@ export function createABRepeatForm(
     value: state.endTime,
     onChange: onEndTimeChange,
     onDoubleClick: getCurrentTime,
+    getVideoDuration,
   })
 
   content.appendChild(startInput)

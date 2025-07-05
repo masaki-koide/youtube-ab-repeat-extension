@@ -8,6 +8,7 @@ interface DOMManagerOptions {
   onStartTimeChange: (time: number | null) => void
   onEndTimeChange: (time: number | null) => void
   getCurrentTime: () => number
+  getVideoDuration: () => number
 }
 
 interface DOMManager {
@@ -18,8 +19,13 @@ interface DOMManager {
 }
 
 export function createDOMManager(options: DOMManagerOptions): DOMManager {
-  const { onToggleRepeat, onStartTimeChange, onEndTimeChange, getCurrentTime } =
-    options
+  const {
+    onToggleRepeat,
+    onStartTimeChange,
+    onEndTimeChange,
+    getCurrentTime,
+    getVideoDuration,
+  } = options
 
   let buttonContainer: HTMLElement | null = null
   let formContainer: HTMLElement | null = null
@@ -70,6 +76,7 @@ export function createDOMManager(options: DOMManagerOptions): DOMManager {
             onStartTimeChange,
             onEndTimeChange,
             getCurrentTime,
+            getVideoDuration,
           })
 
           formContainer.appendChild(form)

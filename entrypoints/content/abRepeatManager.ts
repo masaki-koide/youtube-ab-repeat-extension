@@ -17,6 +17,7 @@ export function createABRepeatManager() {
     onStartTimeChange: (time: number | null) => stateManager.setStartTime(time),
     onEndTimeChange: (time: number | null) => stateManager.setEndTime(time),
     getCurrentTime: () => videoLoopManager.getCurrentTime(),
+    getVideoDuration: () => videoLoopManager.getVideoDuration(),
   })
 
   // Subscribe to state changes

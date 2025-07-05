@@ -2,11 +2,19 @@ import { formatTime, parseTime } from '~/utils/time'
 import type { TimeInputElement } from '../../types/dom'
 import { inputStyles, isDarkTheme } from '../styles'
 
+// Time adjustment step constants (in seconds)
+const TIME_STEP = {
+  DEFAULT: 1, // 1 second
+  WITH_SHIFT: 10, // 10 seconds
+  WITH_CTRL: 60, // 1 minute
+} as const
+
 export interface TimeInputOptions {
   label: string
   value: number | null
   onChange: (value: number | null) => void
   onDoubleClick: () => number
+  getVideoDuration?: () => number
 }
 
 export function createTimeInput(options: TimeInputOptions): TimeInputElement {
@@ -77,23 +85,71 @@ export function createTimeInput(options: TimeInputOptions): TimeInputElement {
   input.addEventListener('change', (e) => {
     const target = e.target as HTMLInputElement
     const parsed = parseTime(target.value)
+    value = parsed // Update internal value
     onChange(parsed)
     if (parsed === null) {
       target.value = ''
     } else {
       target.value = formatTime(parsed)
     }
+    updateClearButton()
   })
 
   input.addEventListener('dblclick', () => {
     const currentTime = onDoubleClick()
+    value = currentTime // Update internal value
     onChange(currentTime)
     input.value = formatTime(currentTime)
+    updateClearButton()
   })
 
   clearBtn.addEventListener('click', () => {
+    value = null // Update internal value
     onChange(null)
     input.value = ''
+    updateClearButton()
+  })
+
+  // Helper function to calculate time adjustment step
+  const getTimeStep = (event: WheelEvent): number => {
+    if (event.ctrlKey) return TIME_STEP.WITH_CTRL
+    if (event.shiftKey) return TIME_STEP.WITH_SHIFT
+    return TIME_STEP.DEFAULT
+  }
+
+  // Helper function to calculate new time value with bounds checking
+  const calculateNewTime = (
+    currentValue: number,
+    deltaY: number,
+    step: number,
+  ): number | null => {
+    const direction = deltaY > 0 ? 1 : -1 // positive deltaY = scroll down = increase
+    const newValue = currentValue + direction * step
+
+    // Check lower bound
+    if (newValue < 0) return null
+
+    // Check upper bound
+    const maxDuration = options.getVideoDuration?.() ?? Number.MAX_SAFE_INTEGER
+    if (newValue > maxDuration) return null
+
+    return newValue
+  }
+
+  // Wheel event handler for scrolling time adjustment
+  input.addEventListener('wheel', (e) => {
+    e.preventDefault()
+
+    const currentValue = value ?? 0
+    const step = getTimeStep(e)
+    const newValue = calculateNewTime(currentValue, e.deltaY, step)
+
+    if (newValue === null) return
+
+    value = newValue
+    onChange(newValue)
+    input.value = formatTime(newValue)
+    updateClearButton()
   })
 
   // Update clear button visibility
