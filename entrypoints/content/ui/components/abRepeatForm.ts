@@ -3,7 +3,7 @@ import type { ABRepeatFormElement, TimeInputElement } from '../../types/dom'
 import { formStyles, isDarkTheme } from '../styles'
 import { createTimeInput } from './timeInput'
 
-interface ABRepeatFormOptions {
+export interface ABRepeatFormOptions {
   state: ABRepeatState
   onStartTimeChange: (time: number | null) => void
   onEndTimeChange: (time: number | null) => void

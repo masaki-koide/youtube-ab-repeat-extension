@@ -1,14 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/html'
 import { expect, userEvent, within } from '@storybook/test'
 import { withTheme } from '~/stories/decorators/themeDecorator'
-import { createABRepeatButton } from './abRepeatButton'
+import {
+  type ABRepeatButtonOptions,
+  createABRepeatButton,
+} from './abRepeatButton'
 
-interface ABRepeatButtonArgs {
-  enabled: boolean
-  onClick?: () => void
-}
-
-const meta: Meta<ABRepeatButtonArgs> = {
+const meta: Meta<ABRepeatButtonOptions> = {
   title: 'Components/ABRepeatButton',
   decorators: [withTheme],
   argTypes: {
@@ -25,9 +23,9 @@ const meta: Meta<ABRepeatButtonArgs> = {
 }
 
 export default meta
-type Story = StoryObj<ABRepeatButtonArgs>
+type Story = StoryObj<ABRepeatButtonOptions>
 
-const renderButton = (args: ABRepeatButtonArgs): HTMLDivElement => {
+const renderButton = (args: ABRepeatButtonOptions): HTMLDivElement => {
   const wrapper = document.createElement('div')
   wrapper.style.cssText = `
     display: inline-flex;

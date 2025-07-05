@@ -2,7 +2,7 @@ import { formatTime, parseTime } from '~/utils/time'
 import type { TimeInputElement } from '../../types/dom'
 import { inputStyles, isDarkTheme } from '../styles'
 
-interface TimeInputOptions {
+export interface TimeInputOptions {
   label: string
   value: number | null
   onChange: (value: number | null) => void

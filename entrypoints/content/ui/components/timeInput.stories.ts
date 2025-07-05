@@ -2,16 +2,9 @@ import type { Meta, StoryObj } from '@storybook/html'
 import { expect, userEvent, within } from '@storybook/test'
 import type { TimeInputElement } from '~/entrypoints/content/types/dom'
 import { withTheme } from '~/stories/decorators/themeDecorator'
-import { createTimeInput } from './timeInput'
+import { createTimeInput, type TimeInputOptions } from './timeInput'
 
-interface TimeInputArgs {
-  label: string
-  value: number | null
-  onChange?: (value: number | null) => void
-  onDoubleClick?: () => number
-}
-
-const meta: Meta<TimeInputArgs> = {
+const meta: Meta<TimeInputOptions> = {
   title: 'Components/TimeInput',
   decorators: [withTheme],
   argTypes: {
@@ -37,9 +30,9 @@ const meta: Meta<TimeInputArgs> = {
 }
 
 export default meta
-type Story = StoryObj<TimeInputArgs>
+type Story = StoryObj<TimeInputOptions>
 
-const createDefaultHandlers = (args: TimeInputArgs) => ({
+const createDefaultHandlers = (args: TimeInputOptions) => ({
   onChange:
     args.onChange ||
     ((value: number | null) => console.log('Changed to:', value)),
@@ -51,7 +44,7 @@ const createDefaultHandlers = (args: TimeInputArgs) => ({
     }),
 })
 
-const renderTimeInput = (args: TimeInputArgs): TimeInputElement => {
+const renderTimeInput = (args: TimeInputOptions): TimeInputElement => {
   const input = createTimeInput({
     label: args.label,
     value: args.value,

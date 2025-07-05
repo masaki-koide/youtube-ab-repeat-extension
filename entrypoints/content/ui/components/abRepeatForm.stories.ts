@@ -3,15 +3,12 @@ import { expect, userEvent, within } from '@storybook/test'
 import type { ABRepeatState } from '~/entrypoints/content/types'
 import type { ABRepeatFormElement } from '~/entrypoints/content/types/dom'
 import { withTheme } from '~/stories/decorators/themeDecorator'
-import { createABRepeatForm } from './abRepeatForm'
+import { type ABRepeatFormOptions, createABRepeatForm } from './abRepeatForm'
 
-interface ABRepeatFormArgs {
+type ABRepeatFormArgs = Omit<ABRepeatFormOptions, 'state'> & {
   enabled: boolean
   startTime: number | null
   endTime: number | null
-  onStartTimeChange?: (time: number | null) => void
-  onEndTimeChange?: (time: number | null) => void
-  getCurrentTime?: () => number
 }
 
 const meta: Meta<ABRepeatFormArgs> = {

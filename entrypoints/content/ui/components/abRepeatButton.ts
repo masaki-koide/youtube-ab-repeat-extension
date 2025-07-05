@@ -1,7 +1,7 @@
 import type { ABRepeatButtonElement } from '../../types/dom'
 import { buttonStyles } from '../styles'
 
-interface ABRepeatButtonOptions {
+export interface ABRepeatButtonOptions {
   enabled: boolean
   onClick: () => void
 }
