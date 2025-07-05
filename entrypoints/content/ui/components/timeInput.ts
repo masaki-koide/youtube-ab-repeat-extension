@@ -19,7 +19,6 @@ export function createTimeInput(options: TimeInputOptions): TimeInputElement {
   // Label
   const labelEl = document.createElement('label')
   labelEl.textContent = label
-  labelEl.style.cssText = inputStyles.label(isDarkTheme())
 
   // Input container
   const inputContainer = document.createElement('div')
@@ -30,7 +29,24 @@ export function createTimeInput(options: TimeInputOptions): TimeInputElement {
   input.type = 'text'
   input.placeholder = '00:00:00'
   input.value = value !== null ? formatTime(value) : ''
+
+  // Clear button
+  const clearBtn = document.createElement('button')
+  clearBtn.type = 'button'
+  clearBtn.innerHTML = `
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 6 6 18"></path>
+      <path d="m6 6 12 12"></path>
+    </svg>
+  `
+
+  // Apply styles
+  labelEl.style.cssText = inputStyles.label(isDarkTheme())
   input.style.cssText = inputStyles.input(isDarkTheme())
+  clearBtn.style.cssText = inputStyles.clearButton(
+    isDarkTheme(),
+    value !== null,
+  )
 
   // Focus styles
   input.addEventListener('focus', () => {
@@ -44,20 +60,6 @@ export function createTimeInput(options: TimeInputOptions): TimeInputElement {
       ? 'rgba(255, 255, 255, 0.2)'
       : 'rgba(0, 0, 0, 0.1)'
   })
-
-  // Clear button
-  const clearBtn = document.createElement('button')
-  clearBtn.type = 'button'
-  clearBtn.innerHTML = `
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M18 6 6 18"></path>
-      <path d="m6 6 12 12"></path>
-    </svg>
-  `
-  clearBtn.style.cssText = inputStyles.clearButton(
-    isDarkTheme(),
-    value !== null,
-  )
 
   clearBtn.addEventListener('mouseenter', () => {
     clearBtn.style.backgroundColor = isDarkTheme()
