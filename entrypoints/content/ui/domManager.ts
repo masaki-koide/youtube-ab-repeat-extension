@@ -3,14 +3,14 @@ import type { ABRepeatButtonElement, ABRepeatFormElement } from '../types/dom'
 import { createABRepeatButton } from './components/abRepeatButton'
 import { createABRepeatForm } from './components/abRepeatForm'
 
-export interface DOMManagerOptions {
+interface DOMManagerOptions {
   onToggleRepeat: () => void
   onStartTimeChange: (time: number | null) => void
   onEndTimeChange: (time: number | null) => void
   getCurrentTime: () => number
 }
 
-export interface DOMManager {
+interface DOMManager {
   insertButton(state: ABRepeatState): void
   insertForm(state: ABRepeatState): void
   updateUI(state: ABRepeatState): void

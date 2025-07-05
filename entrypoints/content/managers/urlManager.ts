@@ -1,6 +1,6 @@
 import type { ABRepeatState } from '../types'
 
-export interface URLManager {
+interface URLManager {
   loadStateFromURL(): Partial<ABRepeatState> | null
   updateURL(
     state: ABRepeatState,
@@ -17,7 +17,7 @@ export interface LocationService {
 }
 
 // デフォルトの実装（ブラウザ環境用）
-export const defaultLocationService: LocationService = {
+const defaultLocationService: LocationService = {
   getSearch: () => window.location.search,
   getHash: () => window.location.hash,
   getPathname: () => window.location.pathname,

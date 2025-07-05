@@ -1,6 +1,6 @@
 import type { ABRepeatState } from '../types'
 
-export interface VideoLoopManager {
+interface VideoLoopManager {
   findVideoElement(): HTMLVideoElement | null
   startLoopCheck(state: ABRepeatState): void
   stopLoopCheck(): void
@@ -18,12 +18,12 @@ export interface TimerService {
 }
 
 // デフォルトの実装（ブラウザ環境用）
-export const defaultVideoService: VideoService = {
+const defaultVideoService: VideoService = {
   querySelector: (selector: string) =>
     document.querySelector(selector) as HTMLVideoElement | null,
 }
 
-export const defaultTimerService: TimerService = {
+const defaultTimerService: TimerService = {
   setInterval: (callback: () => void, delay: number) =>
     window.setInterval(callback, delay),
   clearInterval: (id: number) => window.clearInterval(id),
