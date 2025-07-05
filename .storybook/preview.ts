@@ -19,10 +19,6 @@ const preview: Preview = {
           name: 'dark',
           value: '#0f0f0f',
         },
-        {
-          name: 'youtube-dark',
-          value: '#0f0f0f',
-        },
       ],
     },
   },
