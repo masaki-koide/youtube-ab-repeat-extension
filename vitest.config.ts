@@ -33,6 +33,12 @@ export default defineConfig({
         '**/mockData.ts',
         '**/*.test.ts',
         '**/*.spec.ts',
+
+        // Storybook files
+        '**/*.stories.ts',
+        '.storybook/**',
+        'stories/**',
+        'storybook-static/**',
       ],
     },
   },
