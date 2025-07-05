@@ -1,3 +1,4 @@
+import { debounce } from '~/utils/debounce'
 import { formatTime, parseTime } from '~/utils/time'
 import type { TimeInputElement } from '../../types/dom'
 import { inputStyles, isDarkTheme } from '../styles'
@@ -8,6 +9,9 @@ const TIME_STEP = {
   WITH_SHIFT: 10, // 10 seconds
   WITH_CTRL: 60, // 1 minute
 } as const
+
+// Debounce delay for input changes (in milliseconds)
+const INPUT_DEBOUNCE_DELAY = 300
 
 export interface TimeInputOptions {
   label: string
@@ -81,12 +85,23 @@ export function createTimeInput(options: TimeInputOptions): TimeInputElement {
       : 'rgba(0, 0, 0, 0.05)'
   })
 
+  // Create debounced onChange handler
+  const debouncedOnChange = debounce(onChange, INPUT_DEBOUNCE_DELAY)
+
   // Event handlers
+  input.addEventListener('input', (e) => {
+    const target = e.target as HTMLInputElement
+    const parsed = parseTime(target.value)
+    value = parsed // Update internal value
+    debouncedOnChange(parsed)
+    updateClearButton()
+  })
+
   input.addEventListener('change', (e) => {
     const target = e.target as HTMLInputElement
     const parsed = parseTime(target.value)
     value = parsed // Update internal value
-    onChange(parsed)
+    onChange(parsed) // Immediate update on change event
     if (parsed === null) {
       target.value = ''
     } else {
