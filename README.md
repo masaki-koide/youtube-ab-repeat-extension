@@ -6,6 +6,10 @@ A browser extension that adds AB repeat functionality to YouTube videos. Loop se
 
 - **AB Repeat Button**: Integrated directly into YouTube's player controls
 - **Time Input Form**: Clean interface for setting loop start and end times
+- **Mouse Scroll Time Adjustment**: Scroll on time inputs to adjust values
+  - Normal scroll: ±1 second
+  - Shift + scroll: ±10 seconds
+  - Ctrl/Cmd + scroll: ±1 minute
 - **URL Parameter Persistence**: Share links with preset loop times
 - **Smart Navigation Handling**: Maintains settings across YouTube's single-page navigation
 - **Quick Time Setting**: Double-click inputs to capture current playback time
@@ -80,6 +84,12 @@ npm run check:fix
 
 # Type check
 npm run compile
+
+# Run Storybook for component development
+npm run storybook
+
+# Build Storybook for deployment
+npm run build-storybook
 ```
 
 ## Technical Details
@@ -108,8 +118,12 @@ entrypoints/
 │   ├── state/           # State management
 │   │   └── abRepeatState.ts
 │   ├── ui/              # UI components
-│   │   ├── abRepeatButton.ts
-│   │   ├── abRepeatForm.ts
+│   │   ├── components/  # Reusable UI components
+│   │   │   ├── abRepeatButton.ts
+│   │   │   ├── abRepeatForm.ts
+│   │   │   ├── timeInput.ts
+│   │   │   └── *.stories.ts  # Storybook stories
+│   │   ├── domManager.ts
 │   │   └── styles.ts
 │   └── types/           # TypeScript types
 │       └── youtube.ts
@@ -118,6 +132,10 @@ entrypoints/
 utils/                   # Shared utilities
 ├── time.ts             # Time conversion functions
 └── youtube.ts          # YouTube-specific helpers
+
+.storybook/             # Storybook configuration
+├── main.ts
+└── preview.ts
 ```
 
 ### Built With
@@ -125,17 +143,24 @@ utils/                   # Shared utilities
 - [WXT](https://wxt.dev/) - Next-gen WebExtension Framework
 - [TypeScript](https://www.typescriptlang.org/) - Type-safe development
 - [Vitest](https://vitest.dev/) - Unit testing framework
+- [Storybook](https://storybook.js.org/) - Component development environment
 - [Biome](https://biomejs.dev/) - Fast formatter and linter
 - No external runtime dependencies
 
 ### Testing
 
-The project includes comprehensive unit tests:
+The project includes comprehensive testing:
 
-- State management tests
-- URL and video loop manager tests
-- Utility function tests
-- Full coverage reporting
+- Unit tests with Vitest
+  - State management tests
+  - URL and video loop manager tests
+  - Utility function tests
+  - Component tests
+  - Full coverage reporting
+- Component development with Storybook
+  - Visual testing and documentation
+  - Interactive component playground
+  - Automated interaction testing
 
 ### Code Quality
 

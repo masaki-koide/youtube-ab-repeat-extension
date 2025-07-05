@@ -33,6 +33,11 @@ This is a browser extension for YouTube that adds AB repeat functionality, allow
 - `npm run check:fix` - Run Biome checks and fix issues
 - `npm run compile` - Run TypeScript type checking without emitting files
 
+### Storybook
+
+- `npm run storybook` - Start Storybook development server
+- `npm run build-storybook` - Build static Storybook site
+
 ## Architecture Overview
 
 ### WXT Framework
@@ -53,8 +58,14 @@ The project follows a modular architecture:
   - **state/** - State management
     - **abRepeatState.ts** - Centralized state for AB repeat functionality
   - **ui/** - UI components
-    - **abRepeatButton.ts** - AB repeat toggle button
-    - **abRepeatForm.ts** - Time input form
+    - **components/** - Reusable UI components
+      - **abRepeatButton.ts** - AB repeat toggle button
+      - **abRepeatForm.ts** - Time input form
+      - **timeInput.ts** - Individual time input component
+      - **abRepeatButton.stories.ts** - Storybook stories for button
+      - **abRepeatForm.stories.ts** - Storybook stories for form
+      - **timeInput.stories.ts** - Storybook stories for time input
+    - **domManager.ts** - DOM management utilities
     - **styles.ts** - CSS styles for UI components
   - **types/** - TypeScript type definitions
     - **youtube.ts** - YouTube-specific DOM types
@@ -69,6 +80,9 @@ The project follows a modular architecture:
 - **tsconfig.json** - TypeScript configuration extending WXT defaults
 - **biome.json** - Code formatting and linting configuration
 - **vitest.config.ts** - Test runner configuration
+- **.storybook/** - Storybook configuration
+  - **main.ts** - Main Storybook configuration
+  - **preview.ts** - Preview configuration and global decorators
 - **knip.json** - Dead code detection configuration
 - **package.json** - Project dependencies and scripts
 
@@ -122,20 +136,33 @@ The extension is fully functional with comprehensive test coverage:
   - Browser `popstate` event
   - Periodic fallback checks
 
-## Testing
+## Testing Strategy
 
-The project includes comprehensive unit tests using Vitest:
+The project includes comprehensive testing:
+
+### Unit Tests
 
 - **State tests** - Test state management functionality
 - **Manager tests** - Test URL and video loop managers
 - **Utility tests** - Test time conversion and YouTube utilities
+- **Component tests** - Test individual UI components
 - **Coverage reporting** - HTML coverage reports in `coverage/` directory
+
+### Component Development with Storybook
+
+- **Visual testing** - Interactive component development and testing
+- **Stories** - Document component variations and states
+- **Play functions** - Automated interaction testing
+- **Theme support** - Test components in light/dark themes
 
 ## Development Notes
 
 - WXT handles manifest generation - do not create a manual manifest.json
 - All implementation is in TypeScript with strict type checking
+- **NEVER use `any` type. Always provide proper types. If type is truly unknown, use `unknown` instead**
 - No popup UI currently implemented (all controls are injected into YouTube page)
 - Extension icons are in `public/icon/` at standard sizes (16, 32, 48, 96, 128px)
 - Uses Biome for code formatting and linting (replaces ESLint/Prettier)
 - Modular architecture allows for easy testing and maintenance
+- Storybook provides isolated component development environment
+- Components are designed to be reusable and testable
