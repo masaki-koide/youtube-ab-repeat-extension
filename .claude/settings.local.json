@@ -5,16 +5,12 @@
       "Bash(grep:*)",
       "Bash(ls:*)",
       "Bash(mkdir:*)",
-      "Bash(npm run check:*)",
-      "Bash(npm run compile:*)",
-      "Bash(npm run format:*)",
-      "Bash(npm run knip:*)",
-      "Bash(npm run lint:*)",
-      "Bash(npm run storybook:*)",
-      "Bash(npm run test:*)",
+      "Bash(npm run:*)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:speakerdeck.com)",
-      "WebFetch(domain:wxt.dev)"
+      "WebFetch(domain:wxt.dev)",
+      "WebFetch(domain:www.npmjs.com)",
+      "WebFetch(domain:npmtrends.com)"
     ],
     "deny": []
   },
@@ -22,5 +18,18 @@
     "github",
     "context7",
     "playwright"
-  ]
+  ],
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npm run safeguard"
+          }
+        ]
+      }
+    ]
+  }
 }
