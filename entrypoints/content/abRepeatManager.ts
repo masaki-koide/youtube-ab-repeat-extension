@@ -42,21 +42,35 @@ export function createABRepeatManager() {
   function handleVideoChange(): void {
     setupInProgress = true
 
-    // Reset state
+    // Get current state to preserve enabled status
+    const currentState = stateManager.getState()
+
+    // Reset state but preserve enabled status
     stateManager.setState({
-      enabled: false,
+      enabled: currentState.enabled,
       startTime: null,
       endTime: null,
     })
 
-    // Load from URL
+    // Load from URL (this will override if URL has different values)
     const urlState = urlManager.loadStateFromURL()
     if (urlState) {
+      // If URL doesn't have enabled state, preserve current enabled state
+      if (urlState.enabled === undefined) {
+        urlState.enabled = currentState.enabled
+      }
       stateManager.setState(urlState)
     }
 
     setupInProgress = false
     isInitialLoad = false
+
+    // Force URL update after setup is complete
+    const finalState = stateManager.getState()
+    urlManager.updateURL(finalState, {
+      isInitialLoad: false,
+      setupInProgress: false,
+    })
   }
 
   // Initialization
