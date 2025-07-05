@@ -356,6 +356,126 @@ describe('abRepeatManager', () => {
     })
   })
 
+  describe('page reload', () => {
+    it('should restore state from URL on page reload', async () => {
+      const manager = createABRepeatManager()
+
+      // Simulate URL state from a previous session
+      mockUrlManager.loadStateFromURL.mockReturnValueOnce({
+        enabled: true,
+        startTime: 45,
+        endTime: 90,
+      })
+
+      manager.init()
+
+      // Wait for initialization
+      await new Promise((resolve) => setTimeout(resolve, 200))
+
+      // Verify state was restored from URL
+      expect(mockStateManager.setState).toHaveBeenCalledWith({
+        enabled: true,
+        startTime: 45,
+        endTime: 90,
+      })
+
+      // Verify UI was updated
+      expect(mockDomManager.updateUI).toHaveBeenCalled()
+
+      // Verify video loop was started
+      expect(mockVideoLoopManager.startLoopCheck).toHaveBeenCalled()
+    })
+
+    it('should initialize with default state when URL has no AB repeat parameters', async () => {
+      const manager = createABRepeatManager()
+
+      // Simulate fresh page load with no URL parameters
+      mockUrlManager.loadStateFromURL.mockReturnValueOnce(null)
+
+      manager.init()
+
+      // Wait for initialization
+      await new Promise((resolve) => setTimeout(resolve, 200))
+
+      // Should not call setState when there's no URL state
+      expect(mockStateManager.setState).not.toHaveBeenCalled()
+
+      // Default state should be used (enabled: false)
+      expect(mockStateManager.getState()).toEqual({
+        enabled: false,
+        startTime: null,
+        endTime: null,
+      })
+
+      // Video loop should not be started
+      expect(mockVideoLoopManager.startLoopCheck).not.toHaveBeenCalled()
+    })
+
+    it('should handle partial URL state on reload', async () => {
+      const manager = createABRepeatManager()
+
+      // Simulate URL with only enabled flag, no times
+      mockUrlManager.loadStateFromURL.mockReturnValueOnce({
+        enabled: true,
+        startTime: null,
+        endTime: null,
+      })
+
+      manager.init()
+
+      // Wait for initialization
+      await new Promise((resolve) => setTimeout(resolve, 200))
+
+      // Verify state was set correctly
+      expect(mockStateManager.setState).toHaveBeenCalledWith({
+        enabled: true,
+        startTime: null,
+        endTime: null,
+      })
+
+      // UI should be updated even without times
+      expect(mockDomManager.updateUI).toHaveBeenCalled()
+
+      // Video loop should be started (even without times set)
+      expect(mockVideoLoopManager.startLoopCheck).toHaveBeenCalled()
+    })
+
+    it('should restore state with specific start and end times from URL', async () => {
+      const manager = createABRepeatManager()
+
+      // Simulate URL state with specific times
+      mockUrlManager.loadStateFromURL.mockReturnValueOnce({
+        enabled: true,
+        startTime: 120, // 2:00
+        endTime: 180, // 3:00
+      })
+
+      manager.init()
+
+      // Wait for initialization
+      await new Promise((resolve) => setTimeout(resolve, 200))
+
+      // Verify exact state was restored
+      expect(mockStateManager.setState).toHaveBeenCalledWith({
+        enabled: true,
+        startTime: 120,
+        endTime: 180,
+      })
+
+      // Verify URL was not updated during initial load
+      expect(mockUrlManager.updateURL).toHaveBeenCalledWith(
+        expect.objectContaining({
+          enabled: true,
+          startTime: 120,
+          endTime: 180,
+        }),
+        expect.objectContaining({
+          isInitialLoad: true,
+        }),
+      )
+    })
+  })
+
   describe('cleanup', () => {
     it('should cleanup all managers', () => {
       const manager = createABRepeatManager()

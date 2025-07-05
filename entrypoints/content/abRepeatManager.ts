@@ -7,6 +7,7 @@ export function createABRepeatManager() {
   // Tracking flags
   let isInitialLoad = true
   let setupInProgress = false
+  let hasInitialized = false
 
   // Create managers
   const stateManager = createStateManager()
@@ -41,26 +42,27 @@ export function createABRepeatManager() {
 
   // Video change handling
   function handleVideoChange(): void {
+    // Skip if this is called during initial initialization
+    if (!hasInitialized) return
+
     setupInProgress = true
 
-    // Get current state to preserve enabled status
+    // Get current state to potentially preserve enabled status
     const currentState = stateManager.getState()
 
-    // Reset state but preserve enabled status
-    stateManager.setState({
-      enabled: currentState.enabled,
-      startTime: null,
-      endTime: null,
-    })
-
-    // Load from URL (this will override if URL has different values)
+    // Load state from URL
     const urlState = urlManager.loadStateFromURL()
+
     if (urlState) {
-      // If URL doesn't have enabled state, preserve current enabled state
-      if (urlState.enabled === undefined) {
-        urlState.enabled = currentState.enabled
-      }
+      // URL has AB repeat parameters, use them completely
       stateManager.setState(urlState)
+    } else {
+      // No URL parameters, preserve enabled state but reset times
+      stateManager.setState({
+        enabled: currentState.enabled,
+        startTime: null,
+        endTime: null,
+      })
     }
 
     setupInProgress = false
@@ -103,6 +105,12 @@ export function createABRepeatManager() {
       } else {
         isInitialLoad = false
 
+        // Force URL update to ensure parameters are preserved
+        urlManager.updateURL(state, {
+          isInitialLoad: false,
+          setupInProgress: false,
+        })
+
         // Start loop check if enabled
         if (state.enabled) {
           const videoElement = videoLoopManager.findVideoElement()
@@ -110,6 +118,9 @@ export function createABRepeatManager() {
             videoLoopManager.startLoopCheck(state)
           }
         }
+
+        // Mark as fully initialized
+        hasInitialized = true
       }
     }
     tryInsertUI()
@@ -132,6 +143,8 @@ export function createABRepeatManager() {
   function cleanup(): void {
     videoLoopManager.cleanup()
     domManager.cleanup()
+    window.removeEventListener('yt-navigate-finish', handleVideoChange)
+    window.removeEventListener('popstate', handleVideoChange)
   }
 
   return {
