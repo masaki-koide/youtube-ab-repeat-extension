@@ -1,5 +1,13 @@
 import type { ABRepeatState } from '../types'
 
+const URL_PARAMS = {
+  ENABLED: 'ab_repeat',
+  START: 'ab_start',
+  END: 'ab_end',
+} as const
+
+type URLParamKey = (typeof URL_PARAMS)[keyof typeof URL_PARAMS]
+
 interface URLManager {
   loadStateFromURL(): Partial<ABRepeatState> | null
   updateURL(
@@ -28,42 +36,40 @@ const defaultLocationService: LocationService = {
 export function createURLManager(
   locationService: LocationService = defaultLocationService,
 ): URLManager {
-  function parseHashParams(hash: string): URLSearchParams {
+  function parseHashParams(hash: string): Map<URLParamKey, string> {
     const hashContent = hash.slice(1)
-    const params = new URLSearchParams()
+    const params = new Map<URLParamKey, string>()
 
-    const abRepeatMatch = hashContent.match(/ab_repeat=([^&]*)/)
-    const abStartMatch = hashContent.match(/ab_start=([^&]*)/)
-    const abEndMatch = hashContent.match(/ab_end=([^&]*)/)
+    const abRepeatMatch = hashContent.match(
+      new RegExp(`${URL_PARAMS.ENABLED}=([^&]*)`),
+    )
+    const abStartMatch = hashContent.match(
+      new RegExp(`${URL_PARAMS.START}=([^&]*)`),
+    )
+    const abEndMatch = hashContent.match(
+      new RegExp(`${URL_PARAMS.END}=([^&]*)`),
+    )
 
-    if (abRepeatMatch) params.set('ab_repeat', abRepeatMatch[1])
-    if (abStartMatch) params.set('ab_start', abStartMatch[1])
-    if (abEndMatch) params.set('ab_end', abEndMatch[1])
+    if (abRepeatMatch) params.set(URL_PARAMS.ENABLED, abRepeatMatch[1])
+    if (abStartMatch) params.set(URL_PARAMS.START, abStartMatch[1])
+    if (abEndMatch) params.set(URL_PARAMS.END, abEndMatch[1])
 
     return params
   }
 
   return {
     loadStateFromURL(): Partial<ABRepeatState> | null {
-      // First try to load from query params (for backward compatibility)
-      const urlParams = new URLSearchParams(locationService.getSearch())
-      let abRepeat = urlParams.get('ab_repeat')
-      let abStart = urlParams.get('ab_start')
-      let abEnd = urlParams.get('ab_end')
-
-      // If not found in query params, try hash
-      if (!abRepeat) {
-        const hashParams = parseHashParams(locationService.getHash())
-        abRepeat = hashParams.get('ab_repeat')
-        abStart = hashParams.get('ab_start')
-        abEnd = hashParams.get('ab_end')
-      }
+      // Load from hash params
+      const hashParams = parseHashParams(locationService.getHash())
+      const abRepeat = hashParams.get(URL_PARAMS.ENABLED)
+      const abStart = hashParams.get(URL_PARAMS.START)
+      const abEnd = hashParams.get(URL_PARAMS.END)
 
       if (abRepeat === '1') {
         return {
           enabled: true,
-          startTime: abStart ? Number.parseFloat(abStart) : null,
-          endTime: abEnd ? Number.parseFloat(abEnd) : null,
+          startTime: abStart ? Number.parseInt(abStart, 10) : null,
+          endTime: abEnd ? Number.parseInt(abEnd, 10) : null,
         }
       }
 
@@ -81,21 +87,23 @@ export function createURLManager(
       const abParams = new URLSearchParams()
 
       if (state.enabled) {
-        abParams.set('ab_repeat', '1')
+        abParams.set(URL_PARAMS.ENABLED, '1')
         if (state.startTime !== null) {
-          abParams.set('ab_start', Math.floor(state.startTime).toString())
+          // Store as integer seconds for cleaner URLs
+          abParams.set(URL_PARAMS.START, Math.floor(state.startTime).toString())
         }
         if (state.endTime !== null) {
-          abParams.set('ab_end', Math.floor(state.endTime).toString())
+          // Store as integer seconds for cleaner URLs
+          abParams.set(URL_PARAMS.END, Math.floor(state.endTime).toString())
         }
       }
 
       // Get current hash and remove any existing AB repeat params
       let currentHash = locationService.getHash().slice(1)
       currentHash = currentHash
-        .replace(/ab_repeat=[^&]*/g, '')
-        .replace(/ab_start=[^&]*/g, '')
-        .replace(/ab_end=[^&]*/g, '')
+        .replace(new RegExp(`${URL_PARAMS.ENABLED}=[^&]*`, 'g'), '')
+        .replace(new RegExp(`${URL_PARAMS.START}=[^&]*`, 'g'), '')
+        .replace(new RegExp(`${URL_PARAMS.END}=[^&]*`, 'g'), '')
       currentHash = currentHash.replace(/&+/g, '&').replace(/^&|&$/g, '')
 
       // Build new hash

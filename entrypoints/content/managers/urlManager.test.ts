@@ -16,53 +16,6 @@ describe('URLManager', () => {
   }
 
   describe('loadStateFromURL', () => {
-    describe('loading from query parameters', () => {
-      it('loads AB repeat enabled state', () => {
-        const locationService = createMockLocationService({
-          getSearch: () => '?v=abc123&ab_repeat=1&ab_start=10&ab_end=30',
-        })
-        const urlManager = createURLManager(locationService)
-
-        const state = urlManager.loadStateFromURL()
-
-        expect(state).toEqual({
-          enabled: true,
-          startTime: 10,
-          endTime: 30,
-        })
-      })
-
-      it('loads state with only start time set', () => {
-        const locationService = createMockLocationService({
-          getSearch: () => '?ab_repeat=1&ab_start=20',
-        })
-        const urlManager = createURLManager(locationService)
-
-        const state = urlManager.loadStateFromURL()
-
-        expect(state).toEqual({
-          enabled: true,
-          startTime: 20,
-          endTime: null,
-        })
-      })
-
-      it('loads state with only end time set', () => {
-        const locationService = createMockLocationService({
-          getSearch: () => '?ab_repeat=1&ab_end=40',
-        })
-        const urlManager = createURLManager(locationService)
-
-        const state = urlManager.loadStateFromURL()
-
-        expect(state).toEqual({
-          enabled: true,
-          startTime: null,
-          endTime: 40,
-        })
-      })
-    })
-
     describe('loading from hash parameters', () => {
       it('loads AB repeat state from hash', () => {
         const locationService = createMockLocationService({
@@ -95,28 +48,10 @@ describe('URLManager', () => {
       })
     })
 
-    describe('priority', () => {
-      it('query parameters take precedence', () => {
-        const locationService = createMockLocationService({
-          getSearch: () => '?ab_repeat=1&ab_start=5&ab_end=10',
-          getHash: () => '#ab_repeat=1&ab_start=15&ab_end=25',
-        })
-        const urlManager = createURLManager(locationService)
-
-        const state = urlManager.loadStateFromURL()
-
-        expect(state).toEqual({
-          enabled: true,
-          startTime: 5,
-          endTime: 10,
-        })
-      })
-    })
-
     describe('invalid state', () => {
       it('returns null when ab_repeat is not 1', () => {
         const locationService = createMockLocationService({
-          getSearch: () => '?ab_repeat=0&ab_start=10&ab_end=20',
+          getHash: () => '#ab_repeat=0&ab_start=10&ab_end=20',
         })
         const urlManager = createURLManager(locationService)
 
@@ -127,7 +62,7 @@ describe('URLManager', () => {
 
       it('returns null when ab_repeat is missing', () => {
         const locationService = createMockLocationService({
-          getSearch: () => '?ab_start=10&ab_end=20',
+          getHash: () => '#ab_start=10&ab_end=20',
         })
         const urlManager = createURLManager(locationService)
 
