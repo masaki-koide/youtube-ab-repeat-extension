@@ -111,6 +111,9 @@ export function createTimeInput(options: TimeInputOptions): TimeInputElement {
   })
 
   input.addEventListener('dblclick', () => {
+    // Cancel any pending debounced changes
+    debouncedOnChange.cancel()
+
     const currentTime = onDoubleClick()
     value = currentTime // Update internal value
     onChange(currentTime)
@@ -119,6 +122,9 @@ export function createTimeInput(options: TimeInputOptions): TimeInputElement {
   })
 
   clearBtn.addEventListener('click', () => {
+    // Cancel any pending debounced changes
+    debouncedOnChange.cancel()
+
     value = null // Update internal value
     onChange(null)
     input.value = ''
@@ -154,6 +160,9 @@ export function createTimeInput(options: TimeInputOptions): TimeInputElement {
   // Wheel event handler for scrolling time adjustment
   input.addEventListener('wheel', (e) => {
     e.preventDefault()
+
+    // Cancel any pending debounced changes
+    debouncedOnChange.cancel()
 
     const currentValue = value ?? 0
     const step = getTimeStep(e)

@@ -65,4 +65,46 @@ describe('debounce', () => {
     vi.advanceTimersByTime(100)
     expect(fn2).toHaveBeenCalledTimes(1)
   })
+
+  it('should cancel pending execution when cancel is called', () => {
+    const fn = vi.fn()
+    const debouncedFn = debounce(fn, 300)
+
+    debouncedFn('test')
+    vi.advanceTimersByTime(200)
+    expect(fn).not.toHaveBeenCalled()
+
+    debouncedFn.cancel()
+    vi.advanceTimersByTime(200)
+    expect(fn).not.toHaveBeenCalled()
+  })
+
+  it('should handle cancel when no pending execution', () => {
+    const fn = vi.fn()
+    const debouncedFn = debounce(fn, 300)
+
+    // Call cancel without any pending execution
+    expect(() => debouncedFn.cancel()).not.toThrow()
+    expect(fn).not.toHaveBeenCalled()
+  })
+
+  it('should work normally after cancel', () => {
+    const fn = vi.fn()
+    const debouncedFn = debounce(fn, 300)
+
+    // First call and cancel
+    debouncedFn('first')
+    vi.advanceTimersByTime(100)
+    debouncedFn.cancel()
+
+    // Verify first call was cancelled
+    vi.advanceTimersByTime(300)
+    expect(fn).not.toHaveBeenCalled()
+
+    // Second call after cancel should work normally
+    debouncedFn('second')
+    vi.advanceTimersByTime(300)
+    expect(fn).toHaveBeenCalledTimes(1)
+    expect(fn).toHaveBeenCalledWith('second')
+  })
 })
