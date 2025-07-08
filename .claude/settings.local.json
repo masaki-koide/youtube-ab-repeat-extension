@@ -6,13 +6,12 @@
       "Bash(ls:*)",
       "Bash(mkdir:*)",
       "Bash(npm run:*)",
-      "Bash(npm test:*)",
-      "Bash(npm view:*)",
+      "WebFetch(domain:biomejs.dev)",
       "WebFetch(domain:github.com)",
+      "WebFetch(domain:npmtrends.com)",
       "WebFetch(domain:speakerdeck.com)",
-      "WebFetch(domain:wxt.dev)",
       "WebFetch(domain:www.npmjs.com)",
-      "WebFetch(domain:npmtrends.com)"
+      "WebFetch(domain:wxt.dev)"
     ],
     "deny": []
   },
