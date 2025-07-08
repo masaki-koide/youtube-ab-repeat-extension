@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.1.0/schema.json",
   "files": {
     "includes": ["entrypoints/**/*", "utils/**/*", "*.config.ts", "*.json"]
   },
@@ -8,17 +8,10 @@
     "rules": {
       "recommended": true,
       "style": {
-        "useNodejsImportProtocol": "off",
-        "noParameterAssign": "error",
-        "useAsConstAssertion": "error",
-        "useDefaultParameterLast": "error",
-        "useEnumInitializers": "error",
-        "useSelfClosingElements": "error",
-        "useSingleVarDeclarator": "error",
-        "noUnusedTemplateLiteral": "error",
-        "useNumberNamespace": "error",
-        "noInferrableTypes": "error",
-        "noUselessElse": "error"
+        "noParameterAssign": "error"
+      },
+      "nursery": {
+        "noMisusedPromises": "error"
       }
     }
   },
@@ -46,7 +39,7 @@
   },
   "json": {
     "formatter": {
-      "trailingCommas": "all"
+      "trailingCommas": "none"
     }
   }
 }
