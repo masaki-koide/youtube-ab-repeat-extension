@@ -44,7 +44,7 @@ A browser extension that adds AB repeat functionality to YouTube videos. Loop se
 - `ab_start=<seconds>` - Sets start time (A point)
 - `ab_end=<seconds>` - Sets end time (B point)
 
-Example: `https://www.youtube.com/watch?v=VIDEO_ID&ab_repeat=1&ab_start=60&ab_end=120`
+Example: `https://www.youtube.com/watch?v=VIDEO_ID#ab_repeat=1&ab_start=60&ab_end=120`
 
 ## Development
 
@@ -181,9 +181,8 @@ Pull requests are welcome! For major changes, please open an issue first to disc
 ### Development Guidelines
 
 1. Run tests before submitting: `npm run test`
-2. Ensure code is formatted and linted: `npm run check:fix`
-3. Check and fix code issues: `npm run check:fix`
-4. Verify TypeScript types: `npm run compile`
+2. Check and fix code issues: `npm run check:fix`
+3. Verify TypeScript types: `npm run compile`
 
 ## License
 
