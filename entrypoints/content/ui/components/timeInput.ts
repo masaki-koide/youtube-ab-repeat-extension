@@ -91,10 +91,21 @@ export function createTimeInput(options: TimeInputOptions): TimeInputElement {
   // Event handlers
   input.addEventListener('input', (e) => {
     const target = e.target as HTMLInputElement
-    const parsed = parseTime(target.value)
-    value = parsed // Update internal value
-    debouncedOnChange(parsed)
-    updateClearButton()
+    // Only update if we have a valid time or empty input
+    if (target.value === '') {
+      value = null
+      debouncedOnChange(null)
+      updateClearButton()
+    } else {
+      const parsed = parseTime(target.value)
+      // Only update state if we have a valid time
+      if (parsed !== null) {
+        value = parsed
+        debouncedOnChange(parsed)
+        updateClearButton()
+      }
+      // Otherwise, keep the input as-is and don't update state
+    }
   })
 
   input.addEventListener('change', (e) => {
@@ -189,6 +200,10 @@ export function createTimeInput(options: TimeInputOptions): TimeInputElement {
 
   // Store references for updates
   container._updateValue = (newValue: number | null) => {
+    // Skip update if value hasn't changed
+    if (value === newValue) {
+      return
+    }
     value = newValue
     input.value = newValue !== null ? formatTime(newValue) : ''
     updateClearButton()
